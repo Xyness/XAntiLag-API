@@ -1,0 +1,38 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+// The version is the addon's own: an API tagged 1.1.0 is the one shipped by XAntiLag 1.1.0, with
+// no table to consult. Read from version.yml so the repo and the artifact can never disagree.
+def fileVersion = (file('version.yml').text =~ /(?m)^version:\s*(.+)$/)[0][1].trim()
+
+group = 'com.github.Xyness'
+version = fileVersion
+
+base { archivesName = 'XAntiLag-API' }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+    withJavadocJar()
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = 'XAntiLag-API'
+            from components.java
+        }
+    }
+}
