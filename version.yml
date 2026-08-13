@@ -1,0 +1,48 @@
+# Version
+version: 1.1.0
+
+# Update date
+date: 13/08/2026
+
+# Update notes
+update-notes:
+- "Renamed the config sections anti-afk, custom-distance and tps-monitor to afk, distance and monitor"
+- "Removed entity-collision, hopper-rate-limiter and farmland-optimizer, already covered by Paper"
+- "Removed /xantilag status and /xantilag report, the dashboard replaces them"
+- "Rewrote the AFK detection, only real activity counts"
+- "Camera movement, jumping, vehicles and water pushes no longer keep a player active"
+- "AFK now works in two stages, marked away then kicked (kick-after-seconds)"
+- "Nobody is kicked for AFK below min-players-to-kick"
+- "Auto-miners and auto-clickers are detected and reported"
+- "Added /afk and a PlayerAfkStateChangeEvent for other plugins"
+- "Added spawn reduction around AFK players (afk.on-afk.reduce-spawns)"
+- "Added MSPT monitoring next to TPS"
+- "Added an alert when the server stays under threshold for a set duration"
+- "Added lag machine detection (TNT, falling blocks and item spawns per chunk)"
+- "Added a chunk load watcher, the load rate is attributed to a player"
+- "Added reduce-activation-range, the monitor narrows activation and tracking ranges"
+- "Chunk entity caps refuse the spawn instead of deleting the entity afterwards"
+- "Added Discord notifications for every event, all written in lang"
+- "Added a public API on JitPack (XAntiLag-API), with PerformanceLevelChangeEvent"
+- "Added a chunk heatmap and a Load page charting entities and loaded chunks to the dashboard"
+- "Added per-world overrides, any setting fits under worlds.<name>.<path>"
+- "Added the bypass permissions xantilag.bypass.* and the xantilag:protected tag"
+- "Added the placeholders %xantilag_afk_time%, %xantilag_afk_count%, %xantilag_tps% and %xantilag_mspt%"
+- "Stack labels can show the mob or item name with %name%, translated per client"
+- "Fixed a mob renamed x100 in an anvil dropping a hundred times its loot"
+- "Fixed clearlag and the chunk limiter reading a stack label as a player name"
+- "Fixed exclude-named-entities guarding only one side of a merge"
+- "Fixed clearlag kill-monsters emptying the farm a player was standing in"
+- "The chunk limiter now removes the entities furthest from any player, and logs them"
+- "Fixed the AFK system, the monitor and the distance settings overwriting each other"
+- "Fixed the monitor being unable to undo its own view distance reduction"
+- "Fixed AFK state living in collections that were not thread safe"
+- "Fixed the clearlag completion message and its countdown warnings"
+- "Fixed /chunks sorting and its Next page button paging past the last page"
+- "Fixed the blinking menu buttons showing a vertical bar instead of an arrow"
+- "Fixed /api/xantilag/chunks/top leaking connections and accepting an empty token"
+- "Chunk sweeps are bounded and their interval is configurable"
+- "The spawn limiter ships enabled with rate 100"
+- "Obsolete config and lang keys are removed at startup, with a backup (config-cleanup)"
+- "Language files follow the single language setting of XCore, French included"
+- "Clearlag messages are prefixed [XAntiLag] instead of [ClearLag]"
