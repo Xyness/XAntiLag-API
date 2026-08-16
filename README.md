@@ -1,15 +1,8 @@
 # XAntiLag-API
 
-Public API for [XAntiLag](https://celestis.dev/), the all-in-one optimization addon for XCore.
-
-Every anti-lag measure in one plugin fights the same problem alone. The plugins that actually
-generate the load — cosmetics spraying particles, animated menus redrawing on a timer, spawners
-ticking, schedulers hammering — have no idea the server is struggling, so they keep going exactly
-when they should not. This is how they find out.
-
-Interfaces and events only. Nothing here implements anything: the addon does.
-
----
+Public API for [XAntiLag](https://celestis.dev/), the optimization addon for XCore. Lets a plugin
+read the server's load state and react to it. Interfaces and events only; the addon provides the
+implementation.
 
 ## Installation
 
@@ -23,40 +16,45 @@ dependencies {
 }
 ```
 
-`compileOnly` on purpose — the classes are provided at runtime by XAntiLag itself, and XCore resolves
-them across addons. Shading them into your own jar would give you a *different* class of the same
-name, and an event listener registered on it would simply never fire.
+`compileOnly` only. The classes come from XAntiLag at runtime and XCore resolves them across addons.
+Shading them gives you a different class with the same name, and a listener registered on it never
+fires.
 
-The API version follows the addon's: `1.1.0` is the API shipped by XAntiLag 1.1.0.
-
----
+The API version follows the addon: `1.1.0` ships with XAntiLag 1.1.0.
 
 ## Reading the state
 
 ```java
 if (XAntiLagProvider.isRegistered() && XAntiLagProvider.get().isUnderLoad()) {
-    return; // skip the particle burst this tick
+    return;
 }
 ```
 
-| Method | Answers |
+| Method | Returns |
 |--------|---------|
 | `currentTps()` | Smoothed ticks per second |
 | `currentMspt()` | Smoothed milliseconds per tick |
-| `activeLevel()` | `0` when healthy, `1..n` as configured performance levels trigger |
+| `activeLevel()` | `0` when healthy, `1..n` per configured performance level |
 | `isUnderLoad()` | Whether any level is applied |
-| `spawnRate()` | Percentage of natural mob spawns currently allowed |
-| `isAfk(UUID)` | AFK state — real-movement based, not "has not typed in a while" |
-| `afkCount()` | How many players are away |
+| `spawnRate()` | Percentage of natural mob spawns allowed |
+| `isAfk(UUID)` | AFK state, based on movement |
+| `afkCount()` | Players currently away |
+| `isProtected(Entity)` | Whether the entity is exempt from removal |
 
-Every method is safe to call from any thread. Always guard with `isRegistered()`: XAntiLag is
-optional, and a plugin that hard-depends on it breaks the day an administrator removes it.
+Thread-safe. Guard with `isRegistered()`; XAntiLag is optional.
 
----
+## Protecting an entity
+
+```java
+XAntiLagProvider.get().protect(pet);
+XAntiLagProvider.get().unprotect(pet);
+```
+
+Marks an entity as exempt from clearlag, the chunk limiter and both stackers. The mark survives a
+restart. Tamed animals, mounts and their riders, named mobs and mobs flagged to never despawn are
+already exempt. `clearlag.protected-pdc-keys` does the same from the config side.
 
 ## Reacting to changes
-
-Polling works. Listening costs nothing in between:
 
 ```java
 @EventHandler
@@ -69,19 +67,16 @@ public void onLoad(PerformanceLevelChangeEvent event) {
 }
 ```
 
-`PerformanceLevelChangeEvent` fires the moment a level activates, the moment the server moves
-between levels, and the moment it recovers. It carries `getPreviousLevel()`, `getNewLevel()`,
-`getTps()`, `getMspt()`, plus `isRecovery()` and `isEscalation()`. Fired on the server thread, never
-cancellable: it reports a decision already applied.
-
----
+Fired when a level activates, when the server moves between levels and when it recovers. Carries
+`getPreviousLevel()`, `getNewLevel()`, `getTps()`, `getMspt()`, `isRecovery()` and `isEscalation()`.
+Fired on the server thread, not cancellable.
 
 ## Requirements
 
 - Java 21+
-- Paper 1.21.1+ (or Folia)
-- XCore, with XAntiLag installed on the server at runtime
+- Paper 1.21.1+ or Folia
+- XCore, with XAntiLag installed at runtime
 
 ## License
 
-Free to use in any plugin, including commercial ones.
+Free to use in any plugin, commercial ones included.
