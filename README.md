@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.Xyness:XAntiLag-API:1.1.0'
+    compileOnly 'com.github.Xyness:XAntiLag-API:1.1.1'
 }
 ```
 
@@ -20,7 +20,7 @@ dependencies {
 Shading them gives you a different class with the same name, and a listener registered on it never
 fires.
 
-The API version follows the addon: `1.1.0` ships with XAntiLag 1.1.0.
+The API version follows the addon: `1.1.1` ships with XAntiLag 1.1.1.
 
 ## Reading the state
 
