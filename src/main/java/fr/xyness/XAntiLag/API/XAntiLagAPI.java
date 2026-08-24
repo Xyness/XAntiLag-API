@@ -2,6 +2,8 @@ package fr.xyness.XAntiLag.API;
 
 import java.util.UUID;
 
+import org.bukkit.entity.Entity;
+
 /**
  * What XAntiLag tells the rest of the server about its load.
  *
@@ -76,4 +78,35 @@ public interface XAntiLagAPI {
      * @return The count.
      */
     int afkCount();
+
+    /**
+     * Marks an entity as one no automatic removal may take.
+     *
+     * <p>For a plugin that hands a player something it means them to keep: a companion, a mount, a
+     * quest mob, an event decoration. XAntiLag already spares tamed animals, named mobs, mounts and
+     * anything flagged as never-despawning — but a pet plugin that gives somebody a zombie gives
+     * them a mob none of those tests recognise, and this settles it once and for all.</p>
+     *
+     * <p>The mark is persistent: it survives a restart, and it is honoured by clearlag, by the chunk
+     * limiter and by both stackers.</p>
+     *
+     * @param entity The entity to protect.
+     */
+    void protect(Entity entity);
+
+    /**
+     * Removes the mark set by {@link #protect(Entity)}.
+     *
+     * @param entity The entity.
+     */
+    void unprotect(Entity entity);
+
+    /**
+     * Whether an entity is off-limits to every automatic removal — through {@link #protect(Entity)}
+     * or through any of the rules XAntiLag applies on its own.
+     *
+     * @param entity The entity.
+     * @return {@code true} when nothing will remove it.
+     */
+    boolean isProtected(Entity entity);
 }
