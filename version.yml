@@ -1,27 +1,14 @@
 # Version
-version: 1.1.1
+version: 2.0
 
 # Update date
-date: 24/08/2026
+date: 21/11/2026
 
 # Update notes
 update-notes:
-- "Fixed optimization levels firing right after boot on a healthy server"
-- "The tick time is measured during the grace period, so the first evaluation is based on real values"
-- "A tick time the platform cannot report no longer counts as 50 ms, which was above the level 1 threshold"
-- "Counting loaded chunks no longer copies the whole chunk array every ten seconds"
-- "Discord notifications survive a rate limit, they wait their turn instead of being lost"
-- "GUI clicks go through the shared handler in XCore, sounds and actions behave the same everywhere"
-- "Requires XCore 1.1"
-- "The chunk list redraws the navigation arrows between blinks instead of the whole page"
-- "Fixed the chunk list keeping a background task alive after being closed"
-- "Added a load forecast: a warning when the tick time is climbing towards level 1, before it gets there"
-- "Added the shared button keys XCore asks for when a menu item declares none of its own"
-- "The startup grace period is three minutes instead of one, and a reload restarts it"
-- "Fixed a reload leaving the auto-tuner running, so each one added another writer of your config"
-- "Fixed a reload during a cleanup cycle being able to trip over the pending warnings"
-- "Fixed a player mining being kicked as an auto-miner"
-- "Added afk.machine.loop-radius, and raised mining-blocks to 200"
-- "Added console-logging, to keep a noisy detector out of the console"
-- "Added redstone-clock.notify-staff, to silence the redstone message on its own"
-- "Added redstone-clock.notify-cooldown-seconds, one clock no longer reports itself every half second"
+- "Real plugin now, the jar goes in plugins/ (needs XCore 2.0)"
+- "Fixed items duplicating with the item stacker"
+- "The redstone clock limit is really per second now"
+- "Spawn eggs and buckets don't lose their mob anymore"
+- "Cleanup leaves item frames, armor stands, villagers and pets alone"
+- "AFK machines are reported instead of kicked"
