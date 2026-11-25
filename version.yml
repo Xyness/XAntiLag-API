@@ -1,14 +1,17 @@
 # Version
-version: 2.0
+version: 2.1
 
 # Update date
-date: 21/11/2026
+date: 25/11/2026
 
 # Update notes
 update-notes:
-- "Real plugin now, the jar goes in plugins/ (needs XCore 2.0)"
-- "Fixed items duplicating with the item stacker"
-- "The redstone clock limit is really per second now"
-- "Spawn eggs and buckets don't lose their mob anymore"
-- "Cleanup leaves item frames, armor stands, villagers and pets alone"
-- "AFK machines are reported instead of kicked"
+- "Needs XCore 2.0.1"
+- "Mobs of different colours, variants, ages or gear no longer stack together"
+- "Dye, bucket, food or shears on a stack only affect one mob, and animals can breed inside a stack"
+- "New kill mode: one hit kills as many stacked mobs as its damage allows"
+- "Stacked chickens lay as many eggs as there are chickens"
+- "Kills on a stack count in statistics, and in quest and job plugins"
+- "Stack labels can hide behind walls, have a view distance, and no more x1"
+- "Leave a world out of a feature in one line, shulker boxes out of the tile limit, a sound or not for each clearlag warning"
+- "Teleport button on staff alerts"

@@ -109,4 +109,42 @@ public interface XAntiLagAPI {
      * @return {@code true} when nothing will remove it.
      */
     boolean isProtected(Entity entity);
+
+    /**
+     * How many mobs an entity stands for.
+     *
+     * <p>The mob stacker keeps identical mobs as one entity carrying a count. Anything that hands
+     * out a reward per mob — a quest, a job, a bounty — can ask here how many there are; see also
+     * {@link MobStackKillEvent}, which says how many died.</p>
+     *
+     * <p>Unlike the rest of this interface, to be called from the thread that owns the entity.</p>
+     *
+     * @param entity The entity.
+     * @return The number of mobs, {@code 1} for anything that is not a stack.
+     */
+    int getStackSize(Entity entity);
+
+    /**
+     * Whether an entity stands for more than one mob.
+     *
+     * @param entity The entity.
+     * @return {@code true} for a stack of two or more.
+     */
+    default boolean isStacked(Entity entity) {
+        return getStackSize(entity) > 1;
+    }
+
+    /**
+     * How many items a ground item stands for.
+     *
+     * <p>The item stacker keeps a pile as one item entity showing at most one vanilla stack, with
+     * its real amount stored beside it. A plugin that reads the entity's own stack sees what it
+     * shows; this is what it holds.</p>
+     *
+     * <p>To be called from the thread that owns the item.</p>
+     *
+     * @param item The ground item.
+     * @return The real amount; the amount of its own stack for an item the stacker never touched.
+     */
+    int getStackedAmount(org.bukkit.entity.Item item);
 }

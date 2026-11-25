@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="https://jitpack.io/#Xyness/XAntiLag-API"><img src="https://img.shields.io/badge/version-1.1.1-6fb36f?style=flat-square&labelColor=24292f" alt="Version 1.1.1"></a>
-  <a href="https://builtbybit.com/resources/xantilag.105658/"><img src="https://img.shields.io/badge/ships%20with-XAntiLag%202.0-57606a?style=flat-square&labelColor=24292f" alt="Ships with XAntiLag 2.0"></a>
+  <a href="https://jitpack.io/#Xyness/XAntiLag-API"><img src="https://img.shields.io/badge/version-1.2.0-6fb36f?style=flat-square&labelColor=24292f" alt="Version 1.2.0"></a>
+  <a href="https://builtbybit.com/resources/xantilag.105658/"><img src="https://img.shields.io/badge/ships%20with-XAntiLag%202.1-57606a?style=flat-square&labelColor=24292f" alt="Ships with XAntiLag 2.1"></a>
   <img src="https://img.shields.io/badge/Paper-1.21.1%2B-57606a?style=flat-square&labelColor=24292f" alt="Paper 1.21.1+">
   <img src="https://img.shields.io/badge/Folia-supported-57606a?style=flat-square&labelColor=24292f" alt="Folia supported">
   <img src="https://img.shields.io/badge/Java-21%2B-57606a?style=flat-square&labelColor=24292f" alt="Java 21+">
@@ -28,7 +28,7 @@
 
 Every anti-lag measure in one plugin fights the same problem alone. The plugins that actually make the load (cosmetics spraying particles, animated menus redrawing on a timer, spawners ticking) have no idea the server is struggling, so they keep going exactly when they should not. This API is how they find out.
 
-[XAntiLag](https://builtbybit.com/resources/xantilag.105658/) watches TPS and MSPT and walks the server through its performance levels. Your plugin asks where things stand, or listens for the moment they change, and holds back while the server is under load. The API is three classes: an interface, the accessor that hands it to you, and one event. XAntiLag provides the implementation at runtime.
+[XAntiLag](https://builtbybit.com/resources/xantilag.105658/) watches TPS and MSPT and walks the server through its performance levels. Your plugin asks where things stand, or listens for the moment they change, and holds back while the server is under load. The API is four classes: an interface, the accessor that hands it to you, and two events. XAntiLag provides the implementation at runtime. Since 1.2.0 it also answers for the mob and item stackers: how many mobs an entity stands for, and how many of them just died.
 
 <br>
 
@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.github.Xyness:XAntiLag-API:1.1.1'
+    compileOnly 'com.github.Xyness:XAntiLag-API:1.2.0'
 }
 ```
 
@@ -61,7 +61,7 @@ dependencies {
     <dependency>
         <groupId>com.github.Xyness</groupId>
         <artifactId>XAntiLag-API</artifactId>
-        <version>1.1.1</version>
+        <version>1.2.0</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>
@@ -85,7 +85,7 @@ dependencies:
 
 In a `plugin.yml`, `depend: [XAntiLag]` does the same. An XCore addon needs no declaration: XCore finds the classes among the server's plugins.
 
-The API version is `1.1.1`, the one XAntiLag 2.0 ships with. Sources and Javadoc are published with the jar.
+The API version is `1.2.0`, the one XAntiLag 2.1 ships with. Sources and Javadoc are published with the jar. What 1.2.0 adds (the stack readers and `MobStackKillEvent`) needs XAntiLag 2.1 at runtime; everything else works on 2.0 as well.
 
 <br>
 
@@ -107,8 +107,11 @@ if (XAntiLagProvider.isRegistered() && XAntiLagProvider.get().isUnderLoad()) {
 | `isAfk(UUID)` | AFK state, based on movement |
 | `afkCount()` | Players currently away |
 | `isProtected(Entity)` | Whether the entity is exempt from every automatic removal |
+| `getStackSize(Entity)` | How many mobs the entity stands for, `1` for anything that is not a stack |
+| `isStacked(Entity)` | Whether it stands for two or more |
+| `getStackedAmount(Item)` | How many items a ground item really holds |
 
-Every method is safe to call from any thread. Ask `isRegistered()` first: XAntiLag is optional, and `get()` throws while it is absent or not enabled yet.
+Every method is safe to call from any thread, except the three stack readers, which read the entity and belong on the thread that owns it. Ask `isRegistered()` first: XAntiLag is optional, and `get()` throws while it is absent or not enabled yet.
 
 AFK detection only credits real movement, so `isAfk` does not mean "has not typed in a while": riding a vehicle, turning the camera or walking a confined loop does not keep a player active.
 
@@ -134,6 +137,28 @@ public void onLoad(PerformanceLevelChangeEvent event) {
 
 <br>
 
+## Count the mobs of a stack
+
+XAntiLag keeps identical mobs as one entity carrying a count. When that entity dies the server fires a single `EntityDeathEvent`, however many mobs went with it, so a plugin that counts kills from that event counts one.
+
+```java
+@EventHandler
+public void onStackKill(MobStackKillEvent event) {
+    if (event.getKiller() == null) return;
+    // one of them was already counted from EntityDeathEvent
+    addKills(event.getKiller(), event.getEntity().getType(), event.getAmount() - 1);
+}
+```
+
+`MobStackKillEvent` is fired after the `EntityDeathEvent` of the entity, on the thread that owns it, and only when more than one mob died: `getAmount()` is always 2 or more, and `getKiller()` is `null` when nobody was credited. It cannot be cancelled.
+
+Outside a death, `getStackSize(entity)` tells you how many mobs stand behind an entity, for anything that pays or counts per mob.
+
+> [!NOTE]
+> The game's own statistics (`KILL_ENTITY`, `MOB_KILLS`) are brought up to the real count by XAntiLag itself. A plugin that reads them has nothing to do.
+
+<br>
+
 ## Protect an entity
 
 ```java
@@ -151,7 +176,7 @@ Tamed, named and leashed mobs, mounts and their riders, mobs released from a buc
 
 - Java 21+
 - Paper 1.21.1+ or Folia
-- XAntiLag 2.0 and XCore 2.0 installed at runtime
+- XAntiLag 2.1 and XCore 2.0.1 installed at runtime
 
 ## License
 

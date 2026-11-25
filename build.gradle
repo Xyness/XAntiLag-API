@@ -3,12 +3,11 @@ plugins {
     id 'maven-publish'
 }
 
-// The version is the addon's own: an API tagged 1.1.0 is the one shipped by XAntiLag 1.1.0, with
-// no table to consult. Read from version.yml so the repo and the artifact can never disagree.
-def fileVersion = (file('version.yml').text =~ /(?m)^version:\s*(.+)$/)[0][1].trim()
-
+// The API has a version of its own, which is also the tag it is published under: 1.2.0 is the
+// one XAntiLag 2.1 ships with. version.yml is the plugin's changelog, read by its update checker,
+// and carries the plugin's version.
 group = 'com.github.Xyness'
-version = fileVersion
+version = '1.2.0'
 
 base { archivesName = 'XAntiLag-API' }
 
