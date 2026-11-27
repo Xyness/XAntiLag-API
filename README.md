@@ -183,5 +183,5 @@ Tamed, named and leashed mobs, mounts and their riders, mobs released from a buc
 Free to use in any plugin, commercial ones included.
 
 <p align="center">
-  <sub>XAntiLag is part of the XCore family, with <a href="https://celestis.dev/plugins/xbans">XBans</a>, <a href="https://celestis.dev/plugins/xlogin">XLogin</a> and <a href="https://celestis.dev/plugins/xauctionhouse">XAuctionHouse</a>, all built on <a href="https://github.com/Xyness/XCore">XCore</a>. Made by <a href="https://github.com/Xyness">Xyness</a>.</sub>
+  <sub>XAntiLag is part of the XCore family, with <a href="https://celestis.dev/plugins/xbans">XBans</a>, <a href="https://celestis.dev/plugins/xlogin">XLogin</a>, <a href="https://celestis.dev/plugins/xauctionhouse">XAuctionHouse</a> and <a href="https://celestis.dev/plugins/xshop">XShop</a>, all built on <a href="https://github.com/Xyness/XCore">XCore</a>. Made by <a href="https://github.com/Xyness">Xyness</a>.</sub>
 </p>
